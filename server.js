@@ -6,8 +6,17 @@ const app = express();
 
 app.use(cors({ origin: "*" }));
 
+const ips = [];
+
+app.get("/", (req, res) => {
+  return res.send(ips);
+});
+
 app.get("/image.jpg", (req, res) => {
-  console.log(req.headers["x-forwarded-for"]);
+  const ip = req.headers["x-forwarded-for"];
+  if (!ips.includes(ip)) {
+    ips.push(ip);
+  }
   const imagePath = path.join(__dirname, "images", "example.jpg");
   res.setHeader("Content-Type", "image/jpeg");
   res.sendFile(imagePath);
